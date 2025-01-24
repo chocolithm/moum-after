@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>마이홈</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+    <link href="/css/collection.css" rel="stylesheet" type="text/css">
+    <meta data-th-content="${_csrf.token}" name="csrf-token"/>
+    <meta data-th-content="${_csrf.headerName}" name="csrf-header"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+<header data-th-replace="~{header :: header}"></header>
+
+<main>
+    <aside class="sidemenu clearfix">
+        <div class="myhome-upper-buttons">
+            <button class="btn btn-outline-dark" onClick="openCollectionFormModal();" type="button">수집품 등록</button>
+        </div>
+        <ul>
+            <li data-th-each="maincategory : ${maincategoryList}">
+                <div class="form-check form-switch">
+                    <input checked class="form-check-input myhome-maincategory"
+                           data-th-id="'maincategory-' + ${maincategory.no}"
+                           data-th-value="'maincategory-' + ${maincategory.no}"
+                           onClick="filterCategories(this)" type="checkbox"
+                           value="maincategory">
+                    <label class="form-check-label" data-th-for="'maincategory-' + ${maincategory.no}"
+                           data-th-text="${maincategory.name}"></label>
+                    <div class="bookmark sidemenu-bookmark" data-th-style="'background-color: ' + ${maincategory.color}"></div>
+                </div>
+            </li>
+            <li>
+                <div class="form-check form-switch">
+                    <input checked class="form-check-input myhome-maincategory"
+                           id="maincategory-999"
+                           onClick="filterCategories(this)" type="checkbox" value="maincategory-999">
+                    <label class="form-check-label" data-th-for="maincategory-999"
+                           data-th-text="기타"></label>
+                    <div class="bookmark sidemenu-bookmark" style="background-color: lightgrey"></div>
+                </div>
+            </li>
+        </ul>
+
+
+    </aside>
+    <section class="main-section">
+        <div class="myhome-collections" style="background-color: white">
+            <button class="empty-collection-box btn"
+                    data-th-if="${#lists.isEmpty(collectionList)}" onclick="openCollectionFormModal();">
+                <img class="empty-collection-image" src="/images/collections/empty-collection-image.png">
+                <div class="empty-collection-title">첫 수집품을 등록해보세요!</div>
+            </button>
+            <button data-th-attr="onclick='openCollectionViewModal(' + ${collection.no} + ');'"
+                    data-th-class="'collection-box btn clearfix maincategory-' + ${collection.maincategory.no}"
+                    data-th-each="collection : ${collectionList}"
+                    data-th-if="${not #lists.isEmpty(collectionList)}">
+                <div class="bookmark card-bookmark"
+                data-th-style="'position: relative; top: -10px; right: -80px; background-color: ' + ${collection.maincategory.color}"></div>
+                <img class="collection-image"
+                     data-th-if="${not #lists.isEmpty(collection.attachedFiles)}"
+                     data-th-src="${'https://kr.object.ncloudstorage.com/bitcamp-moum/collection/' + collection.attachedFiles[0].filename}"/>
+                <img class="collection-image"
+                     data-th-if="${#lists.isEmpty(collection.attachedFiles)}"
+                     src="/images/collections/empty-collection.png"/>
+                <div class="collection-title" data-th-text="${collection.name}"></div>
+            </button>
+        </div>
+    </section>
+</main>
+
+<footer data-th-replace="~{footer :: footer}"></footer>
+
+<!--  수집품 등록 화면  -->
+<div class="layer collection-form-layer"></div>
+
+<!--  수집품 상세 화면  -->
+<div class="layer collection-view-layer"></div>
+
+<!--  게시글 등록 화면  -->
+<div class="layer post-form-layer"></div>
+
+<!--  게시글 상세 화면  -->
+<div class="layer post-view-layer"></div>
+
+
+<script src="/js/collection.js"></script>
+
+<script>
+    let collectionSlideIndex = 0;
+
+    window.addEventListener('load', async function() {
+        const params = new URLSearchParams(location.search);
+
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+
+        if (params.has('lastLogin')) {
+            if (!params.get("lastLogin").startsWith(`${year}-${month}-${day}`)) {
+                await updateAchievement("FIRST_LOGIN");
+                await updateAchievement("SEVEN_LOGIN");
+                await updateAchievement("THIRTY_LOGIN");
+                await updateAchievement("HUNDRED_LOGIN");
+            }
+            
+            history.replaceState(null, '', location.origin + '/home');
+            countAlert();
+        }
+    })
+
+    // document.addEventListener("DOMContentLoaded", function () {
+    //     const thumbnailContainer = document.querySelector(".thumbnail-images");
+
+    //     let isDragging = false;
+    //     let startX, scrollLeft;
+
+    //     // 마우스 다운
+    //     thumbnailContainer.addEventListener("mousedown", (e) => {
+    //         isDragging = true;
+    //         thumbnailContainer.classList.add("active");
+    //         startX = e.pageX - thumbnailContainer.offsetLeft; // 시작 위치
+    //         scrollLeft = thumbnailContainer.scrollLeft; // 현재 스크롤 위치
+    //     });
+
+    //     // 마우스 업
+    //     thumbnailContainer.addEventListener("mouseup", () => {
+    //         isDragging = false;
+    //         thumbnailContainer.classList.remove("active");
+    //     });
+
+    //     // 마우스 아웃
+    //     thumbnailContainer.addEventListener("mouseleave", () => {
+    //         isDragging = false;
+    //         thumbnailContainer.classList.remove("active");
+    //     });
+
+    //     // 마우스 이동
+    //     thumbnailContainer.addEventListener("mousemove", (e) => {
+    //         if (!isDragging) return; // 드래그 중이 아니면 무시
+    //         e.preventDefault();
+    //         const x = e.pageX - thumbnailContainer.offsetLeft;
+    //         const walk = (x - startX) * 2; // 스크롤 이동량 조정 (속도)
+    //         thumbnailContainer.scrollLeft = scrollLeft - walk;
+    //     });
+    // });
+
+</script>
+</body>
+</html>

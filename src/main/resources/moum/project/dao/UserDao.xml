@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="moum.project.dao.UserDao">
+
+    <resultMap id="UserMap" type="moum.project.vo.User">
+        <id column="user_id" property="no"/>
+        <result column="nickname" property="nickname"/>
+        <result column="email" property="email"/>
+        <result column="password" property="password"/>
+        <result column="admin" property="admin"/>
+        <result column="photo" property="photo"/>
+        <result column="start_date" property="startDate"/>
+        <result column="end_date" property="endDate"/>
+        <result column="last_login" property="lastLogin"/>
+
+        <association property="userSns" javaType="moum.project.vo.User_SNS">
+            <id column="sns_account_id" property="snsAccountId"/>
+            <result column="provider" property="provider"/>
+            <result column="provider_user_id" property="providerUserId"/>
+        </association>
+    </resultMap>
+
+    <select id="list" resultMap="UserMap">
+        select
+            user_id,
+            nickname,
+            email,
+            admin,
+            photo,
+            start_date,
+            last_login
+        from
+            user
+        where
+            end_date is null
+        order by
+            user_id asc
+    </select>
+
+    <insert id="insert" parameterType="moum.project.vo.User"
+            useGeneratedKeys="true" keyColumn="user_id" keyProperty="no">
+        insert into user(nickname, email, password, admin, photo, end_date, last_login)
+        values (#{nickname}, #{email}, #{password}, #{admin}, #{photo}, #{endDate}, #{lastLogin})
+    </insert>
+
+    <select id="findBy" resultMap="UserMap" parameterType="int">
+        select
+            u.user_id,
+            u.nickname,
+            u.email,
+            u.admin,
+            u.photo,
+            u.start_date,
+            u.end_date,
+            u.last_login,
+            us.sns_account_id,
+            us.provider
+        from
+            user u
+            left join user_sns us on u.user_id = us.user_id
+        where
+            u.user_id=#{no}
+    </select>
+
+
+    <select id="findByEmail" resultMap="UserMap">
+        select
+        user_id,
+        nickname,
+        email,
+        password,
+        admin,
+        photo,
+        start_date,
+        end_date,
+        last_login
+        from
+        user
+        where
+        email=#{email}
+    </select>
+
+    <select id="findByEmailAndPassword" resultMap="UserMap">
+        select
+        user_id,
+        nickname,
+        email,
+        admin,
+        photo,
+        start_date,
+        end_date,
+        last_login
+        from
+        user
+        where
+        email=#{email} and password=#{password}
+    </select>
+
+    <select id="findByNickname" resultMap="UserMap">
+        select
+        user_id,
+        nickname,
+        email,
+        admin,
+        photo,
+        start_date,
+        end_date,
+        last_login
+        from
+        user
+        where
+        nickname = #{nickname}
+    </select>
+
+
+    <update id="update" parameterType="moum.project.vo.User">
+        update user set
+        nickname=#{nickname},
+        email=#{email},
+        password=#{password},
+        admin=#{admin},
+        photo=#{photo},
+        start_date=#{startDate},
+        end_date=#{endDate},
+        last_login=#{lastLogin}
+        where
+        user_id=#{no}
+    </update>
+
+    <update id="updateLastLogin" parameterType="map">
+        update user set
+        last_login = #{lastLoginTime}
+        WHERE user_id = #{userId}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        delete from user
+        where user_id=#{no}
+    </delete>
+
+    <select id="listByPage" resultMap="UserMap" parameterType="map">
+        select
+            u.user_id,
+            u.nickname,
+            u.email,
+            u.admin,
+            u.photo,
+            u.start_date,
+            u.end_date,
+            u.last_login,
+            us.sns_account_id,
+            us.provider
+        from
+            user u
+            left join user_sns us on u.user_id = us.user_id
+        where
+            1 = 1
+            <if test="user.no != 0">
+                AND u.user_id = #{user.no}
+            </if>
+            <if test="user.email != null">
+                AND u.email LIKE CONCAT('%', #{user.email}, '%')
+            </if>
+            <if test="user.nickname != null">
+                AND u.nickname LIKE CONCAT('%', #{user.nickname}, '%')
+            </if>
+            <if test="user.startDateString != null">
+                AND u.start_date LIKE CONCAT(#{user.startDateString}, '%')
+            </if>
+            <if test="user.lastLoginString != null">
+                AND u.last_login LIKE CONCAT(#{user.lastLoginString}, '%')
+            </if>
+            <if test="user.admin != false">
+                AND u.admin = #{user.admin}
+            </if>
+            <if test="user.userSns != null and user.userSns.provider != null">
+                AND us.provider LIKE CONCAT('%', #{user.userSns.provider}, '%')
+            </if>
+            AND u.end_date IS NULL
+        order by
+            u.user_id desc
+        limit #{pageNo}, #{pageCount}
+    </select>
+
+    <select id="count" parameterType="moum.project.vo.User">
+        select count(*)
+        from
+            user u
+            left join user_sns us on u.user_id = us.user_id
+        where
+            1 = 1
+            <if test="no != 0">
+                AND u.user_id = #{no}
+            </if>
+            <if test="email != null">
+                AND u.email LIKE CONCAT('%', #{email}, '%')
+            </if>
+            <if test="nickname != null">
+                AND u.nickname LIKE CONCAT('%', #{nickname}, '%')
+            </if>
+            <if test="startDateString != null">
+                AND u.start_date LIKE CONCAT(#{startDateString}, '%')
+            </if>
+            <if test="lastLoginString != null">
+                AND u.last_login LIKE CONCAT(#{lastLoginString}, '%')
+            </if>
+            <if test="admin != false">
+                AND u.admin = #{admin}
+            </if>
+            <if test="userSns != null and userSns.provider != null">
+                AND us.provider LIKE CONCAT('%', #{userSns.provider}, '%')
+            </if>
+            AND u.end_date IS NULL
+    </select>
+
+    <update id="updateAdmin" parameterType="map">
+        update user
+        set admin = #{no}
+        where user_id = #{userNo}
+    </update>
+</mapper>

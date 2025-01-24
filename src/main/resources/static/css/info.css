@@ -1,0 +1,437 @@
+.wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    min-width: 1340px;
+}
+
+.wrapper .my-info-container {
+    display: flex;
+    flex-direction: row;
+    width: 95%;
+    max-width: 1200px; /* 최대 너비 설정 */
+    margin: 0 auto; /* 가운데 정렬 */
+}
+
+.my-info-container .profile-form {
+    display: flex;
+    flex-direction: row;
+}
+
+.my-info-container .profile-img-container {
+    width: 30%; /* 너비 고정 */
+    height: auto;
+    padding-right: 20px; /* 오른쪽 여백 추가 */
+}
+
+.my-info-container .profile-img-container .profile-img-inner-container {
+    display: flex;
+    margin-bottom: 40px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.my-info-container .edit-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #00ffaa;
+    color: black;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.my-info-container .my-info-right-container {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    padding-left: 20px;
+    position: relative; /* 추가 */
+}
+
+.my-info-right-container .my-info-right-container-body {
+    display: flex;
+    height: 100%;
+}
+
+/* 기본 스타일 (데스크탑) */
+.withdraw-container {
+    position: absolute;
+    top: 720px;
+    left: 1745px;
+}
+
+
+
+.my-info-right-container-body .my-board-container,
+.my-info-right-container-body .my-achievement-container {
+    width: 400px;
+    height: 450px;
+    min-width: unset; /* min-width 속성 제거 */
+    flex-shrink: 0;
+    padding: 35px;
+    background-color: #f9f9f9;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow-y: auto;
+}
+
+.my-info-right-container-body .my-board-container::-webkit-scrollbar,
+.my-info-right-container-body .my-achievement-container::-webkit-scrollbar {
+    display: none;
+}
+
+.my-info-right-container-body .my-board-container {
+    margin-right: 20px;
+    margin-left: 40px;
+}
+
+.my-board-container .recent-board {
+    height: auto;
+    color: black;
+    margin: 5px 0;
+    display: flex;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.my-board-container .recent-board:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.my-board-container .recent-board a {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin: 8px 0;
+    text-align: left;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* 2줄로 제한 */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+}
+
+.my-info-right-container-body .my-achievement-container {
+    margin-left: 20px;
+    margin-right: 40px;
+}
+
+.my-info-right-container-header {
+    margin-left: 40px;
+}
+
+.my-info-right-container-header .my-primary-achievement {
+    font-size: 1.2rem;
+    line-height: 1.2rem;
+    font-weight: bold;
+}
+
+.my-info-right-container-header .my-primary-achievement .my-primary-achievement-img {
+    width: 40px;
+}
+
+.my-info-right-container .user-nickname {
+    font-size: 2rem;
+    font-weight: bold;
+    padding: 5px 0;
+}
+
+.my-info-right-container-body .my-achievement-container .achievement-list-btn {
+    width: 30px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+
+/* myinfo 업적 정보 수정 */
+
+/* 전체적인 레이아웃을 깔끔하게 */
+.input-achievement {
+    width: 180px;
+    height: 40px;
+    margin-bottom: 1rem;
+}
+
+.btn-group .dropdown-toggle {
+    width: 100%;
+    padding: 8px 10px;
+    /* 사이즈 줄이기 */
+    font-size: 14px;
+    /* 텍스트 크기 줄이기 */
+    text-align: left;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    /* 기본 테두리 */
+    border-radius: 4px;
+    /* 둥근 테두리 */
+    transition: all 0.3s ease;
+}
+
+/* 버튼에 포커스가 있을 때 스타일 */
+.btn-group .dropdown-toggle:focus {
+    outline: none;
+    border-color: #007bff;
+    /* 포커스 시 테두리 색상 변경 */
+    background-color: #f7f7f7;
+    /* 배경 색상 변경 */
+}
+
+/* 드롭다운 텍스트 (업적을 선택하세요 기본 텍스트) */
+#achievement-selected {
+    color: #333;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+/* 드롭다운 메뉴 스타일 */
+.dropdown-menu {
+    width: 100%;
+    max-height: 200px;
+    /* 드롭다운 메뉴의 최대 높이 줄이기 */
+    overflow-y: auto;
+    /* 내용이 많을 경우 스크롤 */
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 드롭다운 아이템 기본 스타일 */
+.dropdown-item {
+    padding: 8px 12px;
+    /* 항목 크기 줄이기 */
+    font-size: 14px;
+    /* 텍스트 크기 줄이기 */
+    color: #333;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* 업적 정보 컨테이너 */
+.achievement-info {
+    display: flex;
+    padding: 15px;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+/* 업적 설명 스타일 */
+.achievement-content {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 12px;
+}
+
+/* 업적 내용 컨테이너 */
+.achievement-info > div {
+    flex: 1;
+    min-width: 0; /* text-overflow가 제대로 작동하기 위해 필요 */
+}
+
+/* 선택된 업적을 표시하는 버튼의 스타일 */
+.dropdown-item.active {
+    background-color: #28a745;
+    color: white;
+}
+
+/* 업적이 없을 경우 표시할 스타일 */
+.dropdown-item.disabled {
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+/* 폼 전체 입력 영역에 여백을 추가하여 UI가 편안하게 보이도록 */
+.input-achievement label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.input-achievement .btn-group {
+    margin-top: 10px;
+}
+
+/* 작은 화면에서 드롭다운 버튼이 충분히 크고 클릭할 수 있게 만들어줍니다 */
+@media (max-width: 768px) {
+    .wrapper .my-info-container {
+        flex-direction: column;
+    }
+
+    .my-info-container .profile-img-container,
+    .my-info-container .my-info-right-container {
+        width: 100%;
+        padding: 0;
+    }
+}
+
+.my-info-right-container {
+    padding-top: 0;
+    margin-left: 20px;
+}
+
+/* 반응형 수정 */
+@media (max-width: 768px) {
+    .my-info-right-container {
+        margin-left: 0;
+        margin-top: 20px;
+    }
+}
+
+/* 모달 기본 스타일 수정 */
+.achievement-user-progress.modal {
+    display: none;
+    position: fixed;
+    z-index: 1050;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+/* 모달 다이얼로그 컨테이너 스타일 */
+.achievement-user-progress .modal-dialog {
+    position: relative;
+    width: auto;
+    margin: 1.75rem auto;
+    max-width: 800px;
+    height: calc(100% - 3.5rem);
+}
+
+/* 모달 컨텐츠 스타일 */
+.achievement-user-progress .modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: #fff;
+    border-radius: 0.3rem;
+    outline: 0;
+}
+
+/* 모달 헤더 스타일 */
+.achievement-user-progress .modal-header {
+    flex-shrink: 0;
+    padding: 1rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* 모달 바디 스타일 */
+.achievement-user-progress .modal-body {
+    position: relative;
+    flex: 1 1 auto;
+    padding: 1rem;
+    overflow-y: auto;
+    max-height: calc(100vh - 210px); /* 헤더와 여백을 고려한 높이 */
+}
+
+/* 업적 컨테이너 스타일 */
+.achievement-user-progress .achievement-container {
+    padding: 0 1rem;
+}
+
+/* 스크롤바 스타일링 */
+.achievement-user-progress .modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.achievement-user-progress .modal-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.achievement-user-progress .modal-body::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.achievement-user-progress .modal-body::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* 필터 컨테이너 고정 */
+.achievement-user-progress .filter-container {
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: 1;
+    padding: 1rem;
+    margin: 0;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.profile-img-inner-container label {
+    position: relative;
+    display: block;
+}
+
+.edit-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.edit-overlay i {
+    color: white;
+    font-size: 48px;  /* 아이콘 크기 */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);  /* 아이콘에 그림자 효과 */
+}
+
+.profile-img-inner-container label:hover .edit-overlay {
+    opacity: 1;
+}
+
+ /* myinfo-업적 수정 버튼 */
+.myinfo-achievement-editbutton {
+    border: 2px solid white; /* 테두리 색을 흰색으로 설정 */
+    background: white; /* 배경 제거 */
+    color: black; /* 텍스트 색을 흰색으로 설정 */
+    cursor: pointer; /* 마우스를 올렸을 때 손 모양 커서 */
+    outline: none; /* 포커스 시 테두리 제거 */
+    transition: none; /* 호버 효과 제거 */
+    height: 30px;
+}
+
+/* 호버 시 색상 변화 제거 */
+.myinfo-achievement-editbutton:hover {
+    color: black; /* 호버 시 텍스트 색상 유지 */
+    border: 2px solid white; /* 호버 시 테두리 색상 유지 */
+}
+
+
+/* myinfo 닉네임 수정 버튼 */
+.myinfo-nickname-editbutton {
+      border: 2px solid white; /* 테두리 색을 흰색으로 설정 */
+       background: white; /* 배경 제거 */
+       color: black; /* 텍스트 색을 흰색으로 설정 */
+       cursor: pointer; /* 마우스를 올렸을 때 손 모양 커서 */
+       outline: none; /* 포커스 시 테두리 제거 */
+       transition: none; /* 호버 효과 제거 */
+}
+
+/* 호버 시 색상 변화 제거 */
+.myinfo-nickname-editbutton:hover {
+    color: black; /* 호버 시 텍스트 색상 유지 */
+      border: 2px solid white; /* 호버 시 테두리 색상 유지 */
+}

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta name="csrf-token" th:content="${_csrf.token}"/>
+    <meta name="csrf-header" th:content="${_csrf.headerName}"/>
+    <link data-th-href="@{/css/test.css}" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>게시글 등록</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+<div th:replace="~{header}"></div>
+
+<main>
+    <div class="container mt-4" style="width: 1000px">
+    <h2>게시글 등록</h2>
+    <form enctype="multipart/form-data" id="postForm">
+
+        <!-- CSRF 토큰 -->
+        <input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
+
+        <!-- 게시글 종류 선택 -->
+        <div class="form-group">
+            <label for="boardType">게시글 종류</label>
+            <select class="form-control" id="boardType" name="boardType" required>
+                <option value="bragging">전시하기</option>
+                <option value="general">일반 게시글</option>
+                <option value="trade">거래 게시글</option>
+            </select>
+        </div>
+
+        <!-- 수집품 선택 (자랑하기 게시글 전용) -->
+        <div class="form-group" id="braggingFields" style="display: none;">
+            <label for="braggingCollectionNo">수집품 선택</label>
+            <select class="form-control" id="braggingCollectionNo" name="collection.no">
+                <option disabled selected value="">수집품을 선택하세요</option>
+            </select>
+        </div>
+
+        <!-- 카테고리 선택 -->
+        <div class="form-group">
+            <label for="categoryNo">카테고리 선택</label>
+            <select class="form-control" id="categoryNo" name="categoryNo" required>
+                <option th:each="category : ${maincategoryList}" th:text="${category.name}"
+                        th:value="${category.no}"></option>
+            </select>
+        </div>
+
+        <!-- 제목 입력 -->
+        <div class="form-group">
+            <label for="title">제목</label>
+            <input class="form-control" id="title" name="title" placeholder="제목을 입력하세요" required type="text">
+        </div>
+
+        <!-- 내용 입력 -->
+        <div class="form-group">
+            <label for="content">내용</label>
+            <textarea class="form-control" id="content" name="content"></textarea>
+        </div>
+        <!-- 등록 버튼 -->
+        <div style="text-align: right;">
+            <button class="board-add-button btn btn-dark" onclick="addDetailPost()" type="button">등록하기</button>
+        </div>
+        <!-- 거래 게시글 전용 필드 -->
+        <div id="tradeFields" style="display: none;">
+            <!-- 가격 입력 -->
+            <div class="form-group">
+                <label for="price">가격</label>
+                <input class="form-control" id="price" min="0" name="price" type="number">
+            </div>
+
+            <!-- 거래 타입 -->
+            <div class="form-group">
+                <label for="tradeType">거래 방식</label>
+                <select class="form-control" id="tradeType" name="tradeType" required>
+                    <option value="" disabled selected>---</option>
+                    <option value="sell">판매</option>
+                    <option value="buy">구매</option>
+                </select>
+            </div>
+
+            <!-- 수집품 선택 -->
+            <div class="form-group" id="collectionSelectContainer" style="display: none;">
+                <label for="collectionNo">수집품 선택</label>
+                <select class="form-control" id="collectionNo" name="collection.no">
+                    <option disabled selected value="">수집품을 선택하세요</option>
+                    <!-- 수집품 목록을 동적으로 추가 -->
+                </select>
+            </div>
+
+            <!-- 수집품 미리보기 -->
+            <div id="collectionPreview" style="display: none; margin-top: 20px;">
+                <h5>수집품 미리보기</h5>
+                <div id="collectionPreviewContent">
+                    <!-- 수집품 정보가 여기에 표시됩니다 -->
+                </div>
+            </div>
+
+
+        <!-- 거래 상태를 '거래중'으로 설정하는 숨은 필드 (초기값은 0) -->
+        <input name="status" type="hidden" value="0"/>
+
+
+        </div>
+    </form>
+</div>
+</main>
+<div th:replace="~{footer :: footer}"></div>
+</body>
+
+<style>
+    /* Summernote 영역 스코핑 */
+    .summernote-scope .note-editor {
+        background-color: #fff;
+    }
+
+    .summernote-scope .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .summernote-scope .note-editing-area {
+        background-color: #fff;
+    }
+</style>
+
+<script>
+    let imageUrls = [];
+
+    $(document).ready(function () {
+        // 브라우저에서 스타일을 CSS로 적용하도록 설정
+        try {
+            document.execCommand("styleWithCSS", false, true);
+        } catch (e) {
+            // 일부 브라우저에서 이 명령이 지원되지 않을 수 있으므로 예외 처리
+            console.warn("styleWithCSS command is not supported:", e);
+        }
+
+        // Summernote 초기화
+        $('#content').summernote({
+            placeholder: '내용을 입력하세요 (최대 2048자)',
+            height: 600,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'strikethrough']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ],
+            callbacks: {
+                onImageUpload: function (files) {
+                    const maxSize = 10 * 1024 * 1024; // 10MB 제한
+                    for (let i = 0; i < files.length; i++) {
+                        if (files[i].size > maxSize) {
+                            alert("10MB 이하 파일만 첨부해주세요");
+                            return;
+                        }
+                        saveImages(files[i]);
+                    }
+                },
+                onPaste: function (e) {
+                    var clipboardData = e.originalEvent.clipboardData;
+                    if (clipboardData && clipboardData.items && clipboardData.items.length) {
+                        var item = clipboardData.items[0];
+                        if (item.kind === 'file') {
+                            e.preventDefault();
+                        }
+                    }
+                }
+            }
+        });
+
+        // 게시글 종류 변경 시 거래 필드 표시/숨기기
+        $('#boardType').change(function () {
+            $('#tradeFields').toggle($(this).val() === 'trade');
+        });
+
+        // 거래 방식 변경 이벤트
+        $('#tradeType').change(function () {
+            const tradeType = $(this).val();
+            if (tradeType === 'sell') {
+                $('#collectionSelectContainer').show();
+            } else {
+                $('#collectionSelectContainer').hide();
+            }
+        });
+
+        // 초기 로딩 시 거래 게시글이면 필드 보이기
+        if ($('#boardType').val() === 'trade') {
+            $('#tradeFields').show();
+        }
+
+        // 수집품 목록 로드
+        loadCollections();
+    });
+
+    function saveImages(file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const imageUrl = e.target.result;
+            const fileName = file.name;
+
+            imageUrls.push({ url: imageUrl, name: fileName });
+            $('#content').summernote('insertImage', imageUrl);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function loadCollections() {
+        $.ajax({
+            url: '/collection/list',
+            method: 'GET',
+            success: function (data) {
+                const collectionSelect = $('#collectionNo');
+                data.forEach(function (collection) {
+                    collectionSelect.append('<option value="' + collection.no + '">' + collection.name + '</option>');
+                });
+            },
+            error: function () {
+                alert('수집품 목록을 불러오는 데 실패했습니다.');
+            }
+        });
+    }
+
+
+
+    $(document).ready(function () {
+        // 게시글 종류 변경 시 필드 표시/숨기기
+        $('#boardType').change(function () {
+            const boardType = $(this).val();
+            $('#tradeFields').toggle(boardType === 'trade');
+            $('#braggingFields').toggle(boardType === 'bragging');
+        });
+
+        // 초기 로딩 시 필드 상태 설정
+        const initialBoardType = $('#boardType').val();
+        $('#tradeFields').toggle(initialBoardType === 'trade');
+        $('#braggingFields').toggle(initialBoardType === 'bragging');
+
+        // 수집품 목록 로드 (자랑하기 전용)
+        loadBraggingCollections();
+    });
+
+    function loadBraggingCollections() {
+        $.ajax({
+            url: '/collection/list',
+            method: 'GET',
+            success: function (data) {
+                const collectionSelect = $('#braggingCollectionNo');
+                data.forEach(function (collection) {
+                    collectionSelect.append('<option value="' + collection.no + '">' + collection.name + '</option>');
+                });
+            },
+            error: function () {
+                alert('수집품 목록을 불러오는 데 실패했습니다.');
+            }
+        });
+    }
+
+
+
+
+
+    function addDetailPost() {
+        const formData = new FormData($('#postForm')[0]);
+
+        // 유효성 검사
+        if (!formData.get("title")) { alert("제목을 입력하세요"); return; }
+        if (!formData.get("content")) { alert("내용을 입력하세요"); return; }
+        if (formData.get("boardType") === "bragging") {
+            if (!formData.get("collection.no")) {
+                alert("수집품을 선택해주세요");
+                return;
+            }
+        }
+
+        // 기존 처리
+        const base64Images = [];
+        $('.note-editing-area img').each(function () {
+            const imageUrl = $(this).attr('src');
+            if (imageUrl && imageUrl.startsWith('data:image')) {
+                base64Images.push(imageUrl);
+            }
+        });
+
+        base64Images.forEach((base64Image) => {
+            const imageData = imageUrls.find(image => image.url === base64Image);
+            const fileName = imageData.name;
+            const file = base64ToFile(base64Image, fileName);
+            formData.append('files', file);
+        });
+
+        $.ajax({
+            url: '/board/addDetailPost',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                [$('meta[name="csrf-header"]').attr('content')]: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: async function (response) {
+                if (response === 'success') {
+                    alert('게시글이 등록되었습니다.');
+                    const boardType = formData.get("boardType");
+                    if (boardType === "bragging") {
+                        window.location.href = '/board/braggingList';
+                    } else if (boardType === "trade") {
+                        const tradeType = formData.get("tradeType");
+                        if (tradeType === "sell") {
+                            window.location.href = '/board/tradeHomeSell';
+                        } else if (tradeType === "buy") {
+                            window.location.href = '/board/tradeHomeBuy';
+                        }
+                    } else {
+                        window.location.href = '/board/boardList';
+                    }
+                } else {
+                    alert('게시글 등록에 실패했습니다.');
+                }
+            },
+            error: function () {
+                alert('서버 오류가 발생했습니다.');
+            }
+        });
+    }
+
+    function base64ToFile(base64Data, fileName) {
+        const [metadata, base64String] = base64Data.split(',');
+        const mimeType = metadata.match(/:(.*?);/)[1];
+        const byteCharacters = atob(base64String);
+        const byteArrays = [];
+        for (let offset = 0; offset < byteCharacters.length; offset += 1024) {
+            const slice = byteCharacters.slice(offset, offset + 1024);
+            const byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+            byteArrays.push(new Uint8Array(byteNumbers));
+        }
+        const blob = new Blob(byteArrays, { type: mimeType });
+        return new File([blob], fileName, { type: mimeType });
+    }
+
+
+    // 수집품 선택 시 미리보기 업데이트
+    $('#collectionNo').change(function () {
+        const collectionNo = $(this).val();
+        if (collectionNo) {
+            fetchCollectionDetails(collectionNo);
+        } else {
+            $('#collectionPreview').hide();
+            $('#collectionPreviewContent').html('');
+        }
+    });
+
+    function fetchCollectionDetails(collectionNo) {
+        $.ajax({
+            url: '/collection/get?no=' + collectionNo,
+            method: 'GET',
+            success: function (collection) {
+                displayCollectionPreview(collection);
+            },
+            error: function () {
+                alert('수집품 정보를 가져오는 데 실패했습니다.');
+            }
+        });
+    }
+
+    function displayCollectionPreview(collection) {
+        let previewHtml = '';
+
+        previewHtml += '<p><strong>이름:</strong> ' + collection.name + '</p>';
+        previewHtml += '<p><strong>가격:</strong> ' + collection.price + '원</p>';
+        previewHtml += '<p><strong>상태:</strong> ' + collection.status.name + '</p>';
+        previewHtml += '<p><strong>구매 장소:</strong> ' + collection.purchasePlace + '</p>';
+        previewHtml += '<p><strong>보관 위치:</strong> ' + collection.storageLocation + '</p>';
+
+        // 이미지가 있을 경우 표시
+        if (collection.attachedFiles && collection.attachedFiles.length > 0) {
+            previewHtml += '<div style="display: flex; overflow-x: auto;">';
+            collection.attachedFiles.forEach(function (file) {
+                const imageUrl = 'https://kr.object.ncloudstorage.com/bitcamp-moum/collection/' + file.filename;
+                previewHtml += '<img src="' + imageUrl + '" alt="수집품 이미지" style="width: 150px; margin-right: 10px;">';
+            });
+            previewHtml += '</div>';
+        } else {
+            previewHtml += '<p>이미지가 없습니다.</p>';
+        }
+
+        $('#collectionPreviewContent').html(previewHtml);
+        $('#collectionPreview').show();
+    }
+
+</script>

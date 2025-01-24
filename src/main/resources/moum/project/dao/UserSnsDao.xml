@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="moum.project.dao.UserSnsDao">
+
+    <!-- User_SNS 테이블과 객체 간의 매핑 정의 -->
+    <resultMap id="userSnsResultMap" type="moum.project.vo.User_SNS">
+        <id property="snsAccountId" column="sns_account_id"/>
+        <result property="provider" column="provider"/>
+        <result property="providerUserId" column="provider_user_id"/>
+        <result property="userId" column="user_id"/>
+    </resultMap>
+
+    <!-- SNS 계정 조회 -->
+    <select id="selectUser_SNSByProviderAndUserId" resultMap="userSnsResultMap">
+        SELECT *
+        FROM user_sns
+        WHERE provider = #{provider}
+        AND provider_user_id = #{providerUserId}
+    </select>
+
+    <!-- SNS 계정 등록 -->
+    <insert id="insertUser_SNS" parameterType="moum.project.vo.User_SNS">
+        INSERT INTO user_sns (
+        provider,
+        provider_user_id,
+        user_id
+        ) VALUES (
+        #{provider},
+        #{providerUserId},
+        #{userId}
+        )
+    </insert>
+
+    <!-- 사용자의 모든 SNS 연동 정보 조회 -->
+    <select id="findAllByUserId" resultMap="userSnsResultMap">
+        SELECT *
+        FROM user_sns
+        WHERE user_id = #{userId}
+    </select>
+
+    <delete id="deleteByUserId">
+        DELETE FROM user_sns
+        WHERE user_id = #{userId}
+    </delete>
+</mapper>

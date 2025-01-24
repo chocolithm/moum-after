@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="moum.project.dao.CollectionCategoryDao">
+
+  <resultMap id="SubcategoryMap" type="moum.project.vo.Subcategory">
+    <id column="subcategory_id" property="no"/>
+    <result column="category_name" property="name"/>
+    <result column="count" property="count"/>
+
+    <association property="maincategory" javaType="moum.project.vo.Maincategory">
+      <id column="maincategory_id" property="no"/>
+      <result column="maincategory_name" property="name"/>
+      <result column="color" property="color"/>
+    </association>
+  </resultMap>
+
+  <resultMap id="MaincategoryMap" type="moum.project.vo.Maincategory">
+    <id column="maincategory_id" property="no"/>
+    <result column="category_name" property="name"/>
+    <result column="count" property="count"/>
+      <result column="color" property="color"/>
+  </resultMap>
+
+  <insert id="insertSubcategory" parameterType="moum.project.vo.Subcategory">
+    insert into subcategory(maincategory_id, category_name)
+    values(#{maincategory.no}, #{name})
+  </insert>
+
+  <insert id="insertMaincategory" parameterType="moum.project.vo.Maincategory">
+    insert into maincategory(category_name, color)
+    values(#{name}, #{color})
+  </insert>
+
+  <select id="listSubcategory" resultMap="SubcategoryMap" parameterType="int">
+    select
+      subcategory_id,
+      category_name
+    from
+      subcategory
+    where
+      maincategory_id = #{maincategoryNo}
+  </select>
+
+  <select id="listMaincategory" resultMap="MaincategoryMap">
+    select
+      maincategory_id,
+      category_name,
+      color
+    from
+      maincategory
+    where
+      maincategory_id != -999
+  </select>
+
+  <select id="findSubcategory" resultMap="SubcategoryMap" parameterType="int">
+    SELECT
+      s.subcategory_id,
+      s.category_name,
+      s.maincategory_id,
+      m.category_name AS maincategory_name,
+      COALESCE(COUNT(c.subcategory_id), 0) AS count
+    FROM
+      subcategory s
+    LEFT JOIN
+      maincategory m ON s.maincategory_id = m.maincategory_id
+    LEFT JOIN
+      collection c ON s.subcategory_id = c.subcategory_id
+    WHERE
+      s.subcategory_id = #{no}
+  </select>
+
+  <select id="findSubcategoryByName" resultMap="SubcategoryMap" parameterType="string">
+    select
+      subcategory_id,
+      maincategory_id,
+      category_name
+    from
+      subcategory
+    where
+      category_name = #{name}
+  </select>
+
+  <select id="findMaincategoryByName" resultMap="MaincategoryMap" parameterType="string">
+    select
+      maincategory_id,
+      category_name,
+      color
+    from
+      maincategory
+    where
+      category_name = #{name}
+  </select>
+
+  <select id="findMaincategory" resultMap="SubcategoryMap" parameterType="int">
+    SELECT
+      m.maincategory_id,
+      m.category_name AS maincategory_name,
+      m.color,
+      s.subcategory_id,
+      s.category_name,
+      COALESCE(SUM(CASE WHEN c.subcategory_id IS NOT NULL THEN 1 ELSE 0 END), 0) AS count
+    FROM
+      maincategory m
+    LEFT JOIN
+      subcategory s ON m.maincategory_id = s.maincategory_id
+    LEFT OUTER JOIN
+      collection c ON s.subcategory_id = c.subcategory_id
+    WHERE
+      m.maincategory_id = #{no}
+    GROUP BY
+      m.maincategory_id, m.category_name, s.subcategory_id, s.category_name
+    ORDER BY
+      s.subcategory_id
+  </select>
+
+  <select id="listSubcategoryByMaincategory" resultMap="SubcategoryMap" parameterType="int">
+    SELECT
+      NULL AS subcategory_id,
+      NULL AS category_name,
+      m.maincategory_id,
+      m.category_name AS maincategory_name,
+      m.color,
+      COALESCE(SUM(CASE WHEN c.subcategory_id IS NOT NULL THEN 1 ELSE 0 END), 0) AS count
+    FROM
+      maincategory m
+    LEFT JOIN
+      subcategory s ON m.maincategory_id = s.maincategory_id
+    LEFT JOIN
+      collection c ON s.subcategory_id = c.subcategory_id
+    GROUP BY
+      m.maincategory_id, m.category_name
+    HAVING
+      m.maincategory_id = #{no}
+
+    UNION ALL
+
+    SELECT
+      s.subcategory_id,
+      s.category_name,
+      s.maincategory_id,
+      m.category_name AS maincategory_name,
+      m.color,
+      COALESCE(COUNT(c.subcategory_id), 0) AS count
+    FROM
+      subcategory s
+    LEFT JOIN
+      maincategory m ON s.maincategory_id = m.maincategory_id
+    LEFT JOIN
+      collection c ON s.subcategory_id = c.subcategory_id
+    GROUP BY
+      s.subcategory_id, s.category_name, s.maincategory_id, m.category_name
+    HAVING
+      s.maincategory_id = #{no}
+
+    ORDER BY
+      subcategory_id, maincategory_id
+  </select>
+
+  <select id="listMaincategoryByPage" resultMap="MaincategoryMap" parameterType="map">
+    SELECT
+      m.maincategory_id,
+      m.category_name,
+      m.color,
+      COALESCE(SUM(CASE WHEN c.subcategory_id IS NOT NULL THEN 1 ELSE 0 END), 0) AS count
+    FROM
+      maincategory m
+      LEFT JOIN subcategory s ON m.maincategory_id = s.maincategory_id
+      LEFT JOIN collection c ON s.subcategory_id = c.subcategory_id
+    WHERE
+      1 = 1
+      <if test="maincategory.no != 0">
+        AND m.maincategory_id = #{maincategory.no}
+      </if>
+      <if test="maincategory.name != null">
+          AND m.category_name LIKE CONCAT('%', #{maincategory.name}, '%')
+      </if>
+    GROUP BY
+      m.maincategory_id, m.category_name
+    <if test="maincategory.count > -1">
+      HAVING COALESCE(SUM(CASE WHEN c.subcategory_id IS NOT NULL THEN 1 ELSE 0 END), 0) = #{maincategory.count}
+    </if>
+    ORDER BY
+      maincategory_id
+    LIMIT #{pageNo}, #{pageCount}
+  </select>
+
+  <select id="count" resultType="int" parameterType="moum.project.vo.Maincategory">
+    SELECT count(*)
+    FROM
+      (SELECT count(*)
+      FROM
+        maincategory m
+        LEFT JOIN subcategory s ON m.maincategory_id = s.maincategory_id
+        LEFT JOIN collection c ON s.subcategory_id = c.subcategory_id
+      WHERE
+        1 = 1
+        <if test="no != 0">
+          AND m.maincategory_id = #{no}
+        </if>
+        <if test="name != null">
+            AND m.category_name LIKE CONCAT('%', #{name}, '%')
+        </if>
+      GROUP BY
+        m.maincategory_id, m.category_name
+      <if test="count > -1">
+        HAVING COALESCE(SUM(CASE WHEN c.subcategory_id IS NOT NULL THEN 1 ELSE 0 END), 0) = #{count}
+      </if>
+    ) AS count_table
+  </select>
+</mapper>

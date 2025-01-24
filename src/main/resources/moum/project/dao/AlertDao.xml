@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="moum.project.dao.AlertDao">
+
+  <resultMap id="AlertMap" type="moum.project.vo.Alert">
+    <id column="alert_id" property="no"/>
+    <result column="alert_content" property="content"/>
+    <result column="alert_date" property="date"/>
+    <result column="alert_read" property="read"/>
+    <result column="alert_category" property="category"/>
+    <result column="alert_category_id" property="categoryNo"/>
+
+    <association property="user" javaType="moum.project.vo.User">
+      <id column="user_id" property="no"/>
+      <result column="nickname" property="nickname"/>
+    </association>
+  </resultMap>
+
+  <insert id="insert" parameterType="moum.project.vo.Alert"
+          useGeneratedKeys="true" keyColumn="alert_id" keyProperty="no">
+    insert into alert(user_id, alert_content, alert_category, alert_category_id)
+    values(#{user.no}, #{content}, #{category}, #{categoryNo})
+  </insert>
+
+  <select id="listByUser" resultMap="AlertMap" parameterType="map">
+    select
+      alert_id,
+      alert_content,
+      alert_date,
+      alert_read,
+      alert_category,
+      alert_category_id
+    from
+      alert
+    where
+      user_id = #{userNo}
+    order by
+      alert_date desc
+    limit #{pageNo}, #{pageCount}
+  </select>
+
+  <update id="updateTime" parameterType="int">
+    update alert
+    set alert_date = now()
+    where alert_id = #{no}
+  </update>
+
+  <update id="updateRead" parameterType="int">
+    update alert
+    set alert_read = 1
+    where alert_id = #{no}
+  </update>
+
+  <update id="updateReadAll" parameterType="int">
+    update alert
+    set alert_read = 1
+    where user_id = #{userNo}
+  </update>
+
+  <update id="updateReadByCategoryAndUser" parameterType="moum.project.vo.Alert">
+    update alert
+    set alert_read = 1
+    where alert_category = #{category}
+      and alert_category_id = #{categoryNo}
+      and user_id = #{user.no}
+  </update>
+
+  <delete id="delete" parameterType="int">
+    delete from alert
+    where alert_id = #{no}
+  </delete>
+
+  <select id="exists" parameterType="map">
+    select
+      count(*)
+    from
+      alert
+    where
+      alert_category = #{category}
+      and alert_category_id = #{categoryNo}
+      and user_id = #{user.no}
+      and alert_read = 0
+  </select>
+
+  <select id="countUnreadByUser" parameterType="int">
+    select
+      count(*)
+    from
+      alert
+    where
+      user_id = #{no}
+      and alert_read = 0
+  </select>
+
+</mapper>

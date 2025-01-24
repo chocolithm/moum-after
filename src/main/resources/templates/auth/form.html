@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>로그인</title>
+</head>
+<body onload="populateEmailField()"> <!-- 이메일 필드 자동 채우기 -->
+
+<div class="container p-4">
+    <h3 class="text-center mb-3 text-primary">환영합니다!</h3>
+
+<form th:action="@{/auth/login}" method="post" onsubmit="handleLoginSubmit()">
+    <div class="login-form-container p-4">
+
+        <form id="loginForm" action="/auth/login" method="post" onsubmit="handleLoginSubmit()">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control rounded-2" id="email" name="email" placeholder="이메일을 입력하세요">
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control rounded-2" id="password" name="password" placeholder="비밀번호를 입력하세요">
+            </div>
+
+            <div class="row mb-3">
+                <div class="col">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="saveEmail" name="saveEmail">
+                        <label class="form-check-label" for="saveEmail">
+                            ID 저장
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-dark w-100 mb-2 py-2">로그인</button>
+
+            <div class="social-login d-grid gap-2 mt-3">
+                <button type="button" class="btn w-100 py-2 text-white"
+                        onclick="window.location.href='/oauth2/authorization/naver'"
+                        style="background-color: #03c75a;">
+                    <img src="/images/user/Naver.png" alt="Naver Icon" class="me-2" style="width: 20px; height: 20px;">
+                    NAVER 로그인
+                </button>
+                <button type="button" class="btn w-100 py-2"
+                        onclick="window.location.href='/oauth2/authorization/kakao'"
+                        style="background-color: #FEE500;">
+                    <img src="/images/user/KakaoTalk.png" alt="Kakao Icon" class="me-2" style="width: 20px; height: 20px;">
+                    KAKAO 로그인
+                </button>
+                <button type="button" class="btn btn-light w-100 py-2 border"
+                        onclick="window.location.href='/oauth2/authorization/google'"
+                        style="background-color: #f2f2f2;">
+                    <img src="/images/user/Google.png" alt="Google Icon" class="me-2" style="width: 20px; height: 20px;">
+                    GOOGLE 로그인
+                </button>
+            </div>
+
+            <div class="text-center mt-3">
+                <!-- 회원가입 모달 열기 -->
+                <a href="#" onclick="openSignupFromLoginModal()" class="text-decoration-none text-secondary me-2" data-bs-toggle="modal" data-bs-target="#signupModal">회원가입</a>
+
+                <span class="text-secondary">|</span>
+
+                <!-- 비밀번호 찾기 모달 열기 -->
+                <a href="#" onclick="openResetPasswordFromLoginModal()" class="text-decoration-none text-secondary ms-2" data-bs-toggle="modal" data-bs-target="#resetPasswordModal">비밀번호 찾기</a>
+            </div>
+        </form>
+    </div>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</form>
+</div>
+</body>
+</html>

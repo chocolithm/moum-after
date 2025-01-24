@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="layer collection-view-layer">
+    <img src="/images/common/x.png" class="close-btn" alt="닫기" onclick="closeModal();">
+    <div class="left-side">
+        <!-- <div class="collection-image-btns">
+            <button class="collection-image-btn btn" onClick="triggerFileInput()">⊕</button>
+            <button class="collection-image-btn btn"
+                data-th-onclick="'deleteFile(' + ${collection.no} + ')'">⊗</button>
+        </div> -->
+        <div class="collection-images">
+            <button class="is-primary-btn btn">🌟</button>
+            <div class="main-image">
+                <img alt="Main Collection Image"
+                     id="mainCollectionImage"
+                     th:src="@{'https://kr.object.ncloudstorage.com/bitcamp-moum/collection/' + ${collection.attachedFiles[0].filename}}">
+                <!-- <span id="zoomMouseGuide" style="display: none; position: relative; width: 170px; margin: 0 auto;">
+                    <img alt="마우스를 올려보세요."
+                         id="zoomGuideImage"
+                         src="//img.echosting.cafe24.com/design/skin/admin/ko_KR/txt_product_zoom.gif"
+                         style="position: absolute; top: -27px; right: 0;">
+                </span> -->
+            </div>
+
+            <div class="thumbnail-images">
+                <span data-th-each="file, index : ${collection.attachedFiles}" class="current-image">
+                    <button class="collection-image-btn btn"
+                        data-th-onclick="'deleteFile(' + ${file.no} + ')'">⊗</button>
+                    <img alt="Thumbnail Image"
+                        data-th-index="${index.index}"
+                        data-th-collection-no="${collection.no}"
+                        data-th-file-no="${file.no}"
+                        data-th-src="@{'https://kr.object.ncloudstorage.com/bitcamp-moum/collection/' + ${file.filename}}"
+                        onclick="changeCollectionMainImage(this)">
+                </span>
+                <span class="new-image-btn">
+                    <img alt="Thumbnail Image"
+                        onclick="triggerFileInput()"
+                        src="/images/collections/empty-collection-image.png">
+                </span>
+            </div>
+        </div>
+
+        <!-- <img alt="수집품 이미지 등록" class="collection-image empty-image"
+             data-th-style="${not (collection.attachedFiles == null or #lists.isEmpty(collection.attachedFiles))} ? 'display:none;' : ''"
+             onClick="triggerFileInput()" src="/images/collections/empty-collection.png">
+        <div class="slider"
+             data-th-style="${(collection.attachedFiles == null or #lists.isEmpty(collection.attachedFiles))} ? 'display:none;' : ''">
+            <div class="slides">
+                <img alt="수집품 이미지" class="collection-image slide current-image"
+                     data-th-each="attachedFile : ${collection.attachedFiles}"
+                     data-th-id="'collection-image-' + ${attachedFile.no}"
+                     data-th-src="${'https://kr.object.ncloudstorage.com/bitcamp-moum/collection/' + attachedFile.filename}">
+            </div>
+            <a class="prev" data-th-style="${#lists.size(collection.attachedFiles) <= 1 ? 'display:none;' : ''}"
+               onClick="changeSlide(-1)">&#10094;</a>
+            <a class="next" data-th-style="${#lists.size(collection.attachedFiles) <= 1 ? 'display:none;' : ''}"
+               onClick="changeSlide(1)">&#10095;</a>
+        </div> -->
+        <!-- <div id="currentFilenames">
+            <div data-th-each="attachedFile : ${collection.attachedFiles}"
+                 data-th-id="'currentFilename-' + ${attachedFile.no}"
+                 data-th-unless="${collection.attachedFiles == null or #lists.isEmpty(collection.attachedFiles)}">
+                <span data-th-text="${attachedFile.originFilename}">첨부파일명</span>
+                <button class="btn"
+                        data-th-attr="onClick='deleteFile(' + ${attachedFile.no} + ', ' + ${collection.no} +');'">삭제
+                </button>
+            </div>
+        </div>
+        <div id="filenames"></div> -->
+    </div>
+    <div class="right-side" id="updateForm">
+        <input data-th-name="${_csrf.parameterName}" data-th-value="${_csrf.token}" type="hidden"/>
+        <input data-th-value="${collection.no}" id="no" name="no" readonly type="hidden" value="101">
+        <input id="files" multiple name="files" onChange="addTempFiles(event);" style="display:none;" type="file">
+        <table>
+            <tr>
+                <td><label for="name">상품명 *</label></td>
+                <td><input data-th-value="${collection.name}" id="name" name="name" placeholder="상품명을 입력하세요."
+                           type="text"
+                           value="홍길동"></td>
+            </tr>
+            <tr>
+                <td><label for="price">가격</label></td>
+                <td><input data-th-value="${collection.price}" id="price" name="price" oninput="formatNumber(this);"
+                           placeholder="가격을 입력하세요." type="text" value="100000"></td>
+            </tr>
+            <tr>
+                <td><label for="maincategoryNo">대분류 *</label></td>
+                <td>
+                    <select id="maincategoryNo" name="maincategory.no" onChange="fetchSubcategories(this.value)">
+                        <option value="0">선택</option>
+                        <option data-th-each="maincategory : ${maincategoryList}"
+                                data-th-selected="${maincategory.no} == ${collection.maincategory.no}"
+                                data-th-text="${maincategory.name}" data-th-value="${maincategory.no}" value="1">대분류명
+                        </option>
+                        <option data-th-selected="${collection.maincategory.no == -999}" value="999">기타</option>
+                    </select>
+                </td>
+            </tr>
+            <tr data-th-style="${collection.subcategory.no != -999 ? 'display: table-row;' : 'display: none;'}">
+                <td><label for="subcategoryNo">소분류 *</label></td>
+                <td>
+                    <select id="subcategoryNo" name="subcategory.no">
+                        <option value="0">선택</option>
+                        <option data-th-each="subcategory : ${subcategoryList}"
+                                data-th-selected="${subcategory.no} == ${collection.subcategory.no}"
+                                data-th-text="${subcategory.name}"
+                                data-th-value="${subcategory.no}" value="1">소분류명
+                        </option>
+                    </select>
+                </td>
+            </tr>
+            <tr data-th-style="${collection.subcategory.no == -999 ? 'display: table-row;' : 'display: none;'}">
+                <td><label for="otherCategory">분류명 *</label></td>
+                <td><input data-th-value="${collection.otherCategory}" id="otherCategory" name="otherCategory"
+                           type="text"
+                           value="기타분류"></td>
+            </tr>
+            <tr>
+                <td><label for="purchasePlace">구매처</label></td>
+                <td><input data-th-value="${collection.purchasePlace}" id="purchasePlace" name="purchasePlace"
+                           placeholder="구매처를 입력하세요."
+                           type="text" value="구매처"></td>
+            </tr>
+            <tr>
+                <td><label for="storageLocation">보관장소</label></td>
+                <td><input data-th-value="${collection.storageLocation}" id="storageLocation" name="storageLocation"
+                           placeholder="보관장소를 입력하세요." type="text" value="보관장소"></td>
+            </tr>
+            <tr>
+                <td><label for="statusNo">상태 *</label></td>
+                <td>
+                    <select id="statusNo" name="status.no">
+                        <option value="0">선택</option>
+                        <option data-th-each="status : ${collectionStatusList}"
+                                data-th-selected="${status.no} == ${collection.status.no}" data-th-text="${status.name}"
+                                data-th-value="${status.no}" value="1">상태명
+                        </option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="memo">메모</label></td>
+                <td><input data-th-value="${collection.memo}" id="memo" name="memo" type="text" value="메모"></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <button class="btn btn-dark collection-view-btn" onclick="updateCollection()">수정</button>
+                    <button class="btn btn-dark collection-view-btn" data-th-onclick="'deleteCollection(' + ${collection.no} + ')'">삭제</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+</body>
+
+</html>

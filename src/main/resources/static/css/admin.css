@@ -1,0 +1,378 @@
+.sidemenu {
+  position: fixed;
+  top: 200px;
+  left: 20px;
+  width: 250px;
+  padding: 20px;
+  border: 1px solid lightgrey;
+  border-radius: 25px;
+  background-color: #f9f9f9;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sidemenu li {
+  list-style-type: none;
+  margin: 5px auto;
+}
+
+.sidemenu li input,
+.sidemenu li label {
+  cursor: pointer;
+}
+
+.main-section {
+  margin-left: 310px;
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: calc(100% - 310px);
+  background-color: rgb(245, 245, 245);
+  border: 1px solid lightgrey;
+  border-radius: 25px;
+  position: relative;
+}
+
+.main-section h2 {
+  margin-top: 10px;
+}
+
+.main-section .content-section {
+  height: calc(100vh - 420px);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  overflow: auto;
+  padding: 0 20px;
+}
+
+.main-section .content-section::-webkit-scrollbar {
+  display: none;
+}
+
+.main-section .content-section .list-table {
+  width: 95%;
+  height: 90%;
+  border-radius: 25px;
+  border: none;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+  border-collapse: collapse;
+}
+
+.main-section .content-section .list-table thead {
+  position: sticky;
+  top: 0;
+  background-color: rgb(245, 245, 245);
+  z-index: 1;
+}
+
+.main-section .content-section .list-table thead input {
+  width: 100%;
+  text-align: center;
+}
+
+.main-section .content-section .list-table tbody {
+  display: block;
+  max-height: calc(100vh - 420px);
+  overflow-x: auto;
+  overflow-y: scroll;
+  padding-bottom: 5px;
+}
+
+.main-section .content-section .list-table tbody::-webkit-scrollbar {
+  display: none;
+}
+
+.main-section .content-section .list-table tbody tr,
+.main-section .content-section .list-table thead tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  border: 1px lightgrey solid;
+  transition: box-shadow 0.1s ease;
+}
+
+.main-section .content-section .list-table th,
+.main-section .content-section .list-table td {
+  text-align: center;
+  vertical-align: middle;
+  padding: 3px;
+  border: 1px lightgrey solid;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+
+.main-section .page-section {
+  opacity: 1;
+  margin-top: 10px;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.main-section .content-section .img-div {
+  display: flex;
+  justify-content: center;
+}
+
+.main-section .content-section .user-profile-img,
+.main-section .content-section .achievement-img {
+  width: 300px;
+  object-fit: contain;
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+.main-section .content-section .achievement-img.current-image {
+  cursor: auto;
+}
+
+.main-section .content-section .maincategory-table,
+.main-section .content-section .subcategory-table {
+  margin: 0 5px;
+}
+
+.main-section .content-section .subcategory-table {
+  width: 60%;
+  height: 90%;
+  border-radius: 25px;
+  border: none;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+  border-collapse: collapse;
+}
+
+.main-section .content-section .subcategory-table thead {
+  position: sticky;
+  top: 0;
+  background-color: rgb(245, 245, 245);
+  z-index: 1;
+}
+
+.main-section .content-section .subcategory-table tbody {
+  display: block;
+  max-height: calc(100vh - 450px);
+  overflow-x: auto;
+  overflow-y: scroll;
+  padding-bottom: 5px;
+}
+
+.main-section .content-section .subcategory-table tbody::-webkit-scrollbar {
+  display: none;
+}
+
+.main-section .content-section .subcategory-table tbody tr,
+.main-section .content-section .subcategory-table thead tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  border: 1px lightgrey solid;
+  transition: box-shadow 0.1s ease;
+}
+
+.main-section .content-section .subcategory-table th,
+.main-section .content-section .subcategory-table td {
+  text-align: center;
+  vertical-align: middle;
+  padding: 3px;
+  border: 1px lightgrey solid;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.main-section .subcategory-table .subcategory-add-tr {
+  position: sticky;
+  bottom: -7px;
+  background-color: rgb(245, 245, 245);
+}
+
+.main-section .subcategory-table .subcategory-add-tr input {
+  width: 100%;
+  text-align: center;
+}
+
+.main-section .content-section .view-table,
+.main-section .content-section .maincategory-table {
+  transition: opacity 0.3s ease-in-out;
+  border-collapse: collapse;
+  border-color: none;
+}
+
+.main-section .content-section .view-table th,
+.main-section .content-section .view-table td,
+.main-section .content-section .maincategory-table th,
+.main-section .content-section .maincategory-table td {
+  padding: 10px 20px;
+  border: 1px lightgrey solid;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+  text-align: center;
+}
+
+.main-section .content-section .view-table tr td:first-child {
+  min-width: 200px;
+}
+
+.main-section .content-section .view-table input,
+.main-section .content-section .view-table select {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.main-section .content-section .report-btn {
+  width: 100%;
+  color: white;
+  background: black;
+}
+
+.main-section .btn-section {
+  position: absolute;
+  bottom: 20px;
+  right: 40px;
+}
+
+
+.form-check-input.switch-white {
+  background-color: #fff; /* 스위치 배경을 하얀색으로 */
+  border-color: #ccc; /* 스위치 테두리를 회색으로 */
+}
+
+.form-check-input.switch-white:checked {
+  background-color: black; /* 체크된 스위치의 배경을 초록색으로 */
+  border-color: black; /* 체크된 스위치 테두리 초록색 */
+}
+
+.form-check-input.switch-white:focus {
+  box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25); /* 초록색 테두리 그림자 */
+}
+  
+.slider {
+  position: relative;
+  max-width: 300px;
+  height: 300px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.slides {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+
+.slide {
+  max-width: 300px;
+  box-sizing: border-box;
+}
+
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  padding: 16px;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* 배경 투명도 설정 */
+}
+
+.prev {
+  left: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+.next {
+  right: 0;
+  border-radius: 0 3px 3px 0;
+}
+
+
+.img-div {
+  margin-bottom: 20px;
+  margin-right: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.img-div.add-achievement {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.main-image {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.main-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+  transform-origin: center center;
+}
+
+.main-image:hover img {
+  transform: scale(1); /* 기본 줌 제거 */
+}
+
+
+.thumbnail-images {
+  display: flex;
+  justify-content: center; /* 썸네일 중앙 정렬 */
+  margin-top: 10px;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.thumbnail-images::-webkit-scrollbar {
+  display: none;
+}
+
+
+.thumbnail-images span {
+  position: relative;
+}
+
+.thumbnail-images img {
+  width: 80px; /* 썸네일 너비 */
+  height: 80px; /* 썸네일 높이 */
+  margin-right: 10px;
+  cursor: pointer;
+  object-fit: cover; /* 썸네일도 비율 유지 */
+  border: 2px solid #ddd; /* 썸네일 테두리 */
+  border-radius: 4px; /* 썸네일 둥글게 */
+  transition: border-color 0.3s;
+}
+
+.thumbnail-images .new-image-btn {
+   background-color: rgb(251, 251, 251);
+}
+
+.thumbnail-images .new-image-btn img {
+  opacity: 0.5;
+}
+
+.thumbnail-images img:last-child {
+  margin-right: 0;
+}
+
+.thumbnail-images img:hover {
+  border-color: #333; /* 호버 시 테두리 색 변경 */
+}

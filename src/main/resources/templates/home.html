@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>모음 - 나만의 수집품 관리</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+    <header data-th-replace="~{header :: header}"></header>
+
+    <main>
+        <div class="slider-container">
+            <div class="carousel-indicators" style="z-index: 0;">
+                <button aria-current="true" aria-label="Slide 1" class="active" data-bs-slide-to="0"
+                    data-bs-target="#carouselExampleIndicators" type="button"></button>
+                <button aria-label="Slide 2" data-bs-slide-to="1" data-bs-target="#carouselExampleIndicators"
+                    type="button"></button>
+                <button aria-label="Slide 3" data-bs-slide-to="2" data-bs-target="#carouselExampleIndicators"
+                    type="button"></button>
+                <button aria-label="Slide 4" data-bs-slide-to="3" data-bs-target="#carouselExampleIndicators"
+                    type="button"></button>
+                <button aria-label="Slide 5" data-bs-slide-to="4" data-bs-target="#carouselExampleIndicators"
+                    type="button"></button>
+            </div>
+            <div class="slider" style="z-index: -1;">
+                <img alt="..." src="/images/main/banner-image-1.png">
+                <img alt="..." src="/images/main/banner-image-2.png">
+                <img alt="..." src="/images/main/banner-image-3.png">
+                <img alt="..." src="/images/main/banner-image-4.png">
+                <img alt="..." src="/images/main/banner-image-5.png">
+            </div>
+            <button class="carousel-control-prev" data-bs-slide="prev" data-bs-target="#carouselExampleIndicators"
+                type="button">
+                <span aria-hidden="true" class="carousel-control-prev-icon"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" data-bs-slide="next" data-bs-target="#carouselExampleIndicators"
+                type="button">
+                <span aria-hidden="true" class="carousel-control-next-icon"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+        <div class="main-middle clearfix">
+            <div class="main-middle-box">
+                <h2>모으기</h2>
+                <img alt="모으기 이미지" class="main-middle-image" data-th-src="@{/images/main/main-middle-01.png}">
+            </div>
+            <div class="main-middle-box">
+                <h2>관리하기</h2>
+                <img alt="관리하기 이미지" class="main-middle-image" data-th-src="@{/images/main/main-middle-02.png}">
+            </div>
+            <div class="main-middle-box">
+                <h2>자랑하기</h2>
+                <img alt="자랑하기 이미지" class="main-middle-image" data-th-src="@{/images/main/main-middle-03.png}">
+            </div>
+        </div>
+
+        <style>
+            /* 외부 컨테이너 */
+            #testbox {
+                overflow: hidden;
+                position: relative;
+                width: 100%;
+                height: 100px;
+                margin-top: 50px; /* 원하는 크기로 조정 */
+            }
+
+            /* 배너를 감싸는 요소 */
+            .test {
+                display: flex;
+                flex-wrap: nowrap;
+                animation: bannermove 20s linear infinite;
+            }
+
+            /* 배너의 각 이미지 박스 */
+            .test > div {
+                flex: 0 0 auto;
+                width: 100px; /* 이미지 박스 크기 */
+                height: 100%;
+                margin-right: 20px; /* 이미지 사이 간격 */
+                text-align: center;
+            }
+
+            /* 이미지 스타일 */
+            .test img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            /* 애니메이션 키프레임 */
+            @keyframes bannermove {
+                0% {
+                    transform: translateX(0);
+                }
+                100% {
+                    transform: translateX(calc(-1600px - (16 * 20px)));
+                }
+            }
+
+.main-bottom-full-images {
+    display: flex;
+    flex-direction: column; /* 이미지를 위아래로 배치 */
+    align-items: center;   /* 이미지를 가운데 정렬 */
+    gap: 100px;             /* 이미지 사이의 간격 */
+    width: 100%;           /* 컨테이너가 화면 너비에 꽉 차도록 설정 */
+    margin: 20px 0;        /* 위아래 여백 추가 */
+    padding-left: 30px;    /* 왼쪽에 여백 추가 */
+}
+
+.main-bottom-full-images img {
+    width: 1300px;           /* 이미지를 가로폭에 맞게 설정 */
+    max-width: 1300px;     /* 너무 큰 화면에서는 적절히 제한 */
+    height: auto;          /* 이미지 비율 유지 */
+    display: block;        /* 이미지 요소의 기본 여백 제거 */
+    border-radius: 8px;    /* 선택적으로 둥근 모서리 추가 */
+}
+
+.main-bottom h2 {
+    font-size: 2rem; /* Adjust to your desired font size */
+    font-weight: bold; /* Ensures the font is bold */
+    text-align: center; /* Center-align the text */
+    margin-bottom: 20px; /* Adds space below the heading */
+}
+
+        </style>
+        </head>
+        <body>
+        <!-- 타이핑 !-->
+        <div class="main-bottom clearfix">
+            <h2>모음의 기능 소개</h2>
+            <div class="main-bottom-full-images">
+                <img src="/images/main/main-bottom-01.gif" alt="Full Image 1">
+                <img src="/images/main/main-bottom-02.gif" alt="Full Image 2">
+                <img src="/images/main/main-bottom-03.gif" alt="Full Image 3">
+                <img src="/images/main/main-bottom-04.gif" alt="Full Image 4">
+            </div>
+
+            <div id="testbox">
+                <div class="test">
+                    <div><img src="/images/main/sample-01.jpg" alt="Sample 01" /></div>
+                    <div><img src="/images/main/sample-02.jpg" alt="Sample 02" /></div>
+                    <div><img src="/images/main/sample-03.jpg" alt="Sample 03" /></div>
+                    <div><img src="/images/main/sample-04.jpg" alt="Sample 04" /></div>
+                    <div><img src="/images/main/sample-05.jpg" alt="Sample 05" /></div>
+                    <div><img src="/images/main/sample-06.jpg" alt="Sample 06" /></div>
+                    <div><img src="/images/main/sample-07.jpg" alt="Sample 07" /></div>
+                    <div><img src="/images/main/sample-08.jpg" alt="Sample 08" /></div>
+                    <div><img src="/images/main/sample-09.jpg" alt="Sample 09" /></div>
+                    <div><img src="/images/main/sample-10.jpg" alt="Sample 10" /></div>
+                    <div><img src="/images/main/sample-11.jpg" alt="Sample 11" /></div>
+                    <div><img src="/images/main/sample-12.jpg" alt="Sample 12" /></div>
+                    <div><img src="/images/main/sample-13.jpg" alt="Sample 13" /></div>
+                    <div><img src="/images/main/sample-14.jpg" alt="Sample 14" /></div>
+                    <div><img src="/images/main/sample-15.jpg" alt="Sample 15" /></div>
+                    <div><img src="/images/main/sample-16.jpg" alt="Sample 16" /></div>
+                    <!-- 복제 이미지 -->
+                    <div class="clone"><img src="/images/main/sample-01.jpg" alt="Sample 01" /></div>
+                    <div class="clone"><img src="/images/main/sample-02.jpg" alt="Sample 02" /></div>
+                    <div class="clone"><img src="/images/main/sample-03.jpg" alt="Sample 03" /></div>
+                    <div class="clone"><img src="/images/main/sample-04.jpg" alt="Sample 04" /></div>
+                    <div class="clone"><img src="/images/main/sample-05.jpg" alt="Sample 05" /></div>
+                    <div class="clone"><img src="/images/main/sample-06.jpg" alt="Sample 06" /></div>
+                    <div class="clone"><img src="/images/main/sample-07.jpg" alt="Sample 07" /></div>
+                    <div class="clone"><img src="/images/main/sample-08.jpg" alt="Sample 08" /></div>
+                    <div class="clone"><img src="/images/main/sample-09.jpg" alt="Sample 09" /></div>
+                    <div class="clone"><img src="/images/main/sample-10.jpg" alt="Sample 10" /></div>
+                    <div class="clone"><img src="/images/main/sample-11.jpg" alt="Sample 11" /></div>
+                    <div class="clone"><img src="/images/main/sample-12.jpg" alt="Sample 12" /></div>
+                    <div class="clone"><img src="/images/main/sample-13.jpg" alt="Sample 13" /></div>
+                    <div class="clone"><img src="/images/main/sample-14.jpg" alt="Sample 14" /></div>
+                    <div class="clone"><img src="/images/main/sample-15.jpg" alt="Sample 15" /></div>
+                    <div class="clone"><img src="/images/main/sample-16.jpg" alt="Sample 16" /></div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer data-th-replace="~{footer :: footer}"></footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const slider = document.querySelector('.slider');
+            const indicators = document.querySelectorAll('.carousel-indicators button');
+            const prevButton = document.querySelector('.carousel-control-prev');
+            const nextButton = document.querySelector('.carousel-control-next');
+            let currentIndex = 0;
+            const totalImages = indicators.length;
+            const interval = 3000;
+            let autoSlideInterval;
+
+            // 슬라이드 이동 및 indicator 활성화 함수
+            function moveSlide(index) {
+                currentIndex = index;
+                slider.style.transform = `translateX(-${currentIndex * 20}%)`;
+
+                // indicator 활성화 상태 업데이트
+                indicators.forEach((indicator, i) => {
+                    if (i === currentIndex) {
+                        indicator.classList.add('active');
+                        indicator.setAttribute('aria-current', 'true');
+                    } else {
+                        indicator.classList.remove('active');
+                        indicator.setAttribute('aria-current', 'false');
+                    }
+                });
+            }
+
+            // 다음 슬라이드로 이동
+            function nextSlide() {
+                moveSlide((currentIndex + 1) % totalImages);
+            }
+
+            // 이전 슬라이드로 이동
+            function prevSlide() {
+                moveSlide((currentIndex - 1 + totalImages) % totalImages);
+            }
+
+            // 자동 슬라이드 시작
+            function startAutoSlide() {
+                stopAutoSlide(); // 기존 인터벌 제거
+                autoSlideInterval = setInterval(nextSlide, interval);
+            }
+
+            // 자동 슬라이드 정지
+            function stopAutoSlide() {
+                if (autoSlideInterval) {
+                    clearInterval(autoSlideInterval);
+                }
+            }
+
+            // indicator 버튼 클릭 이벤트
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => {
+                    moveSlide(index);
+                    startAutoSlide(); // 수동 이동 후 자동 슬라이드 재시작
+                });
+            });
+
+            // 이전/다음 버튼 클릭 이벤트
+            prevButton.addEventListener('click', () => {
+                prevSlide();
+                startAutoSlide(); // 수동 이동 후 자동 슬라이드 재시작
+            });
+
+            nextButton.addEventListener('click', () => {
+                nextSlide();
+                startAutoSlide(); // 수동 이동 후 자동 슬라이드 재시작
+            });
+
+            // 마우스가 슬라이더 위에 있을 때 자동 슬라이드 정지
+            slider.addEventListener('mouseenter', stopAutoSlide);
+
+            // 마우스가 슬라이더를 벗어났을 때 자동 슬라이드 재시작
+            slider.addEventListener('mouseleave', startAutoSlide);
+
+            // 초기 상태 설정
+            moveSlide(0);
+            startAutoSlide();
+        });
+    </script>
+
+</body>
+
+</html>

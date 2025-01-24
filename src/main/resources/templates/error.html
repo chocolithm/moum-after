@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>실행 오류</title>
+</head>
+<body>
+
+<!--    <div th:insert="~{header :: header}"></div>-->
+
+    <h1>실행 오류!</h1>
+    <img src="/images/error1.gif">
+    <pre>
+    <span data-th-if="${exception != null}">
+        <span data-th-text="${#strings.escapeJavaScript(#strings.toString(exception))}"></span>
+    </span>
+</pre>
+
+</body>
+</html>

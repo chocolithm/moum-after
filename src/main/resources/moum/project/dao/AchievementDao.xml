@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="moum.project.dao.AchievementDao">
+
+    <resultMap id="AchievementMap" type="moum.project.vo.Achievement">
+        <id column="achievement_id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="content" property="content"/>
+        <result column="photo" property="photo"/>
+        <result column="acquisition_condition" property="condition"/>
+        <result column="location" property="location"/>
+        <result column="progress" property="progress"/>
+        <result column="get_date" property="getDate"/>
+        <result column="score" property="score"/>
+        <result column="max_count" property="maxCount"/>
+        <result column="current_count" property="currentCount"/>
+        <result column="userrank" property="rank"/>
+        <result column="complete_count" property="completeCount"/>
+        <result column="is_primary" property="isPrimary"/>
+
+        <association property="user" javaType="moum.project.vo.User">
+            <id column="user_id" property="no"/>
+            <result column="nickname" property="nickname"/>
+        </association>
+
+    </resultMap>
+
+    <insert id="insert" parameterType="moum.project.vo.Achievement"> <!--추가!-->
+        insert into achievement(achievement_id, name, content, photo, acquisition_condition, score, max_count)
+        values (#{id}, #{name}, #{content}, #{photo}, #{condition}, #{score}, #{maxCount})
+    </insert>
+
+
+    <!--1,2번!-->
+    <insert id="insertByUser" parameterType="map">
+        insert into user_achievement (achievement_id, user_id)
+        values
+        <foreach collection="achievementList" item="achievement" separator=",">
+            (#{achievement.id}, #{user.no})
+        </foreach>
+    </insert>
+
+    <insert id="insertByAchievements" parameterType="map">
+        insert into user_achievement (achievement_id, user_id)
+        values
+        <foreach collection="userList" item="user" separator=",">
+            (#{achievement.id}, #{user.no})
+        </foreach>
+    </insert>
+
+    <select id="list" resultMap="AchievementMap"> <!--목록!-->
+        select
+            achievement_id,
+            name,
+            content,
+            photo,
+            acquisition_condition
+            location,
+            score,
+            max_count
+        from
+            achievement
+        order by
+            achievement_id asc
+    </select>
+
+    <select id="listByUser" resultMap="AchievementMap"> <!--목록!-->
+        select
+            ua.achievement_id,
+            ac.name,
+            ac.content,
+            ac.photo,
+            ac.acquisition_condition,
+            ac.location,
+            ua.progress,
+            ua.get_date
+        from
+            user_achievement ua
+        left join achievement ac
+            on ua.achievement_id = ac.achievement_id
+        where
+            user_id = #{no}
+        order by
+            ua.get_date desc,
+            progress desc
+    </select>
+
+    <select id="listUserGetAchievement" resultMap="AchievementMap"> <!--목록!-->
+        select
+            ua.achievement_id,
+            ac.name,
+            ac.content,
+            ac.photo,
+            ac.acquisition_condition,
+            ac.location,
+            ua.progress,
+            ua.get_date,
+            ua.is_primary
+        from
+            user_achievement ua
+            left join achievement ac on ua.achievement_id = ac.achievement_id
+        where
+            user_id = #{no}
+            and progress = 100
+        order by
+            ac.name desc;
+    </select>
+
+    <select id="listByUserRank" resultMap="AchievementMap"> <!--목록!-->
+        select
+            userrank,
+            user_id,
+            nickname,
+            score
+        from
+            user_achievement_rank
+        order by
+            userrank
+        limit 0, 10;
+    </select>
+
+    <select id="listByPage" resultMap="AchievementMap" parameterType="map">
+        SELECT
+            a.achievement_id,
+            a.name,
+            a.content,
+            a.photo,
+            a.acquisition_condition,
+            a.score,
+            a.max_count,
+            COALESCE(SUM(CASE WHEN ua.progress = 100 THEN 1 ELSE 0 END), 0) AS complete_count
+        FROM
+            achievement a
+        LEFT JOIN
+            user_achievement ua ON a.achievement_id = ua.achievement_id
+        WHERE
+            1 = 1
+            <if test="achievement.id != null">
+                AND a.achievement_id LIKE CONCAT('%', #{achievement.id}, '%')
+            </if>
+            <if test="achievement.name != null">
+                AND a.name LIKE CONCAT('%', #{achievement.name}, '%')
+            </if>
+            <if test="achievement.content != null">
+                AND a.content LIKE CONCAT('%', #{achievement.content}, '%')
+            </if>
+            <if test="achievement.score != 0">
+                AND a.score = #{achievement.score}
+            </if>
+        GROUP BY
+            a.achievement_id, a.name, a.content, a.photo, a.acquisition_condition, a.location
+        <if test="achievement.completeCount > -1">
+            HAVING COALESCE(SUM(CASE WHEN ua.progress = 100 THEN 1 ELSE 0 END), 0) = #{achievement.completeCount}
+        </if>
+        ORDER BY
+            a.achievement_id DESC
+        LIMIT
+            #{pageNo}, #{pageCount};
+    </select>
+
+    <select id="findBy" resultMap="AchievementMap" parameterType="String"> <!--조회!-->
+        select
+            achievement_id,
+            name,
+            content,
+            photo,
+            acquisition_condition,
+            score,
+            max_count
+        from
+            achievement
+        where
+            achievement_id=#{id}
+    </select>
+
+    <select id="findMyAchievement" resultMap="AchievementMap" parameterType="map">
+        select
+            ua.achievement_id,
+            ua.current_count,
+            ua.progress,
+            ua.user_id,
+            a.max_count
+        from
+            user_achievement ua
+            left join achievement a on ua.achievement_id = a.achievement_id
+        where
+            ua.achievement_id = #{id}
+            and ua.user_id = #{userNo}
+    </select>
+
+    <select id="findRankByUser" resultMap="AchievementMap" parameterType="int"> <!--조회!-->
+        select
+            userrank,
+            user_id,
+            nickname,
+            score
+        from
+            user_achievement_rank
+        where
+            user_id=#{no}
+        order by userrank
+    </select>
+
+    <select id="findPrimary" resultMap="AchievementMap" parameterType="int">
+        select
+            a.name,
+            a.photo
+        from
+            achievement a
+            left join user_achievement ua on a.achievement_id=ua.achievement_id
+        where
+            ua.user_id=#{no}
+            and ua.is_primary = 1
+    </select>
+
+    <update id="update" parameterType="moum.project.vo.Achievement"> <!--수정!-->
+        update achievement set
+            name=#{name},
+            content=#{content},
+            acquisition_condition=#{condition},
+            score=#{score},
+            max_count=#{maxCount}
+        where
+            achievement_id=#{id}
+    </update>
+
+    <update id="updatePrimaryAchievement" parameterType="moum.project.vo.Achievement"> <!--수정!-->
+        update user_achievement set
+            is_primary = 1
+        where
+            user_id=#{user.no}
+            and achievement_id=#{id}
+    </update>
+
+    <update id="updateCount" parameterType="moum.project.vo.Achievement">
+        update user_achievement set
+            current_count = #{currentCount},
+            progress = #{progress}
+        where
+            user_id = #{user.no}
+            and achievement_id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="String"> <!--삭제!-->
+        delete from achievement
+        where achievement_id=#{id}
+    </delete>
+
+    <update id="deletePrimaryAchievement" parameterType="moum.project.vo.User"> <!--수정!-->
+        update user_achievement set
+            is_primary = 0
+        where
+            user_id=#{no}
+    </update>
+
+    <select id="count" parameterType="moum.project.vo.Achievement">
+        SELECT count(*)
+        FROM
+            (SELECT count(*)
+            FROM
+                achievement a
+                LEFT JOIN user_achievement ua ON a.achievement_id = ua.achievement_id
+            WHERE
+                1 = 1
+                <if test="id != null">
+                    AND a.achievement_id LIKE CONCAT('%', #{id}, '%')
+                </if>
+                <if test="name != null">
+                    AND a.name LIKE CONCAT('%', #{name}, '%')
+                </if>
+                <if test="content != null">
+                    AND a.content LIKE CONCAT('%', #{content}, '%')
+                </if>
+                <if test="score != 0">
+                    AND a.score = #{score}
+                </if>
+            GROUP BY
+                a.achievement_id, a.name, a.content, a.photo, a.acquisition_condition, a.location
+            <if test="completeCount > -1">
+                HAVING COALESCE(SUM(CASE WHEN ua.progress = 100 THEN 1 ELSE 0 END), 0) = #{completeCount}
+            </if>
+        ) AS count_table
+    </select>
+
+    <update id="completeAchievement" parameterType="moum.project.vo.Achievement">
+        update user_achievement set
+            progress = 100,
+            get_date = now()
+        where
+            user_id = #{user.no}
+            and achievement_id = #{id}
+    </update>
+
+    <delete id="deleteAchievementByUser" parameterType="int">
+        delete from user_achievement
+        where user_id = #{no}
+    </delete>
+
+    <delete id="deleteByAchievement" parameterType="String">
+        delete from user_achievement
+        where achievement_id = #{id}
+    </delete>
+
+</mapper>

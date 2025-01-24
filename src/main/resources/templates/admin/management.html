@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>관리 페이지</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+    <link href="/css/admin.css" rel="stylesheet" type="text/css">
+    <meta data-th-content="${_csrf.token}" name="csrf-token"/>
+    <meta data-th-content="${_csrf.headerName}" name="csrf-header"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+<header data-th-replace="~{header :: header}"></header>
+
+<main>
+
+    <aside class="sidemenu clearfix bg-light text-dark p-3">
+        <ul>
+            <li>
+                <div class="form-check form-switch">
+                    <input class="form-check-input switch-white" id="board-admin" name="admin-radio" type="radio">
+                    <label class="form-check-label" for="board-admin">게시글 관리</label>
+                </div>
+            </li>
+            <li>
+                <div class="form-check form-switch">
+                    <input class="form-check-input switch-white" id="category-admin" name="admin-radio" type="radio">
+                    <label class="form-check-label" for="category-admin">수집품 분류 관리</label>
+                </div>
+            </li>
+            <li>
+                <div class="form-check form-switch">
+                    <input class="form-check-input switch-white" id="achievement-admin" name="admin-radio" type="radio">
+                    <label class="form-check-label" for="achievement-admin">업적 관리</label>
+                </div>
+            </li>
+            <li>
+                <div class="form-check form-switch">
+                    <input class="form-check-input switch-white" id="user-admin" name="admin-radio" type="radio">
+                    <label class="form-check-label" for="user-admin">회원 관리</label>
+                </div>
+            </li>
+            <li>
+                <div class="form-check form-switch">
+                    <input class="form-check-input switch-white" id="report-admin" name="admin-radio" type="radio">
+                    <label class="form-check-label" for="report-admin">신고 관리</label>
+                </div>
+            </li>
+        </ul>
+    </aside>
+    
+    <section class="main-section">
+        <h2>관리자</h2>
+        <div class="content-section">
+
+        </div>
+        <div class="page-section">
+            <nav aria-label="Pagination">
+                <ul class="pagination">
+                    <!-- Previous, Page Numbers, Next 버튼이 여기에 동적으로 생성됨 -->
+                </ul>
+            </nav>
+        </div>
+        <div class="btn-section"></div>
+    </section>
+</main>
+
+<footer data-th-replace="~{footer :: footer}"></footer>
+
+<script src="/js/admin.js"></script>
+</body>
+
+</html>

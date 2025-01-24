@@ -1,0 +1,556 @@
+/* myhome */
+
+.sidemenu {
+  position: fixed;
+  top: 130px;
+  left: 20px;
+  width: 280px;
+  padding: 20px;
+}
+
+.sidemenu ul {
+  border: 1px solid lightgrey;
+  border-radius: 25px;
+  background-color: #f9f9f9;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+}
+
+.sidemenu li {
+  list-style-type: none;
+  margin: 5px auto;
+}
+
+.sidemenu li input,
+.sidemenu li label {
+  cursor: pointer;
+}
+
+.main-section {
+  margin-left: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: calc(100% - 300px);
+}
+
+.myhome-upper-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  width: 100%;
+  gap: 10px;
+}
+
+.myhome-upper-buttons button {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.myhome-collections {
+  border-radius: 15px;
+  background: rgb(240, 240, 240);
+  width: calc(100% - 40px);
+  min-height: 320px;
+  margin-top: 40px;
+  padding: 20px;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  justify-items: center;
+  position: relative;
+}
+
+.myhome-collections .collection-box {
+  width: 200px;
+  height: 280px;
+  padding: 10px 0;
+  border: 1px solid lightgrey;
+  border-radius: 4px;
+  background: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: 0.3s ease;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.myhome-collections .empty-collection-box {
+  width: 200px;
+  height: 280px;
+  padding: 10px 0;
+  border: 1px solid lightgrey;
+  border-radius: 4px;
+  background: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: 0.3s ease;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.myhome-collections .empty-collection-box .empty-collection-image {
+  width: 100%;
+  height: 80%;
+  object-fit: contain;
+  opacity: 0.5;
+}
+
+.myhome-collections .empty-collection-box .empty-collection-title {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.myhome-collections .collection-box .collection-image {
+  width: 100%;
+  height: 80%;
+  object-fit: contain;
+}
+
+.myhome-collections .collection-box .collection-title {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.collection-form-layer {
+  vertical-align: middle;
+  justify-content: center;
+  align-items: center;
+}
+
+.layer.collection-form-layer,
+.layer.collection-view-layer {
+  width: 1000px;
+  padding: 30px 50px;
+}
+
+.collection-form-layer .left-side,
+.collection-view-layer .left-side {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+  margin: 1.25%;
+  justify-content: center;
+}
+
+.collection-form-layer .left-side .collection-image,
+.collection-view-layer .left-side .collection-image {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  object-fit: contain;
+}
+
+.collection-form-layer .left-side .collection-image {
+  cursor: pointer;
+}
+
+.collection-form-layer .left-side .slider,
+.collection-view-layer .left-side .slider {
+  position: relative;
+  max-width: 600px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.collection-form-layer .left-side .slides,
+.collection-view-layer .left-side .slides {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+
+.collection-form-layer .left-side .slide,
+.collection-view-layer .left-side .slide {
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 15px;
+  border: 1px solid rgb(228, 228, 228);
+}
+
+.collection-form-layer .left-side #filenames,
+.collection-view-layer .left-side #filenames {
+  color: blue;
+}
+
+.collection-form-layer .left-side .prev,
+.collection-view-layer .left-side .prev {
+  left: 0;
+}
+
+.collection-form-layer .left-side .next,
+.collection-view-layer .left-side .next {
+  right: 0;
+}
+
+.collection-form-layer .left-side .prev,
+.collection-form-layer .left-side .next,
+.collection-view-layer .left-side .prev,
+.collection-view-layer .left-side .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  padding: 12px;
+  color: black;
+  font-weight: bold;
+  transition: 0.6s ease;
+  /* border-radius: 0 3px 3px 0; */
+  border-radius: 50px;
+  user-select: none;
+  /* background-color: rgba(0, 0, 0, 0.3); */
+}
+
+.collection-form-layer .left-side #currentFilenames div,
+.collection-view-layer .left-side #currentFilenames div {
+  overflow: hidden;
+}
+
+.collection-form-layer .left-side #currentFilenames span,
+.collection-view-layer .left-side #currentFilenames span {
+  display: inline-block;
+  max-width: calc(100% - 70px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.collection-form-layer .right-side,
+.collection-view-layer .right-side {
+  margin: 1.25%;
+  width: 35%;
+  display: flex;
+  justify-content: center;
+}
+
+.collection-form-layer .right-side table,
+.collection-view-layer .right-side table {
+  width: 100%;
+  border-collapse: collapse;
+  border: none;
+}
+
+.collection-form-layer .right-side table tr,
+.collection-view-layer .right-side table tr {
+  border: none;
+}
+
+.collection-form-layer .right-side table td,
+.collection-view-layer .right-side table td {
+  border: none;
+}
+
+.collection-form-layer .right-side label,
+.collection-view-layer .right-side label {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.collection-form-layer .right-side select,
+.collection-view-layer .right-side select {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.collection-form-layer .right-side input[type="text"],
+.collection-view-layer .right-side input[type="text"],
+.collection-form-layer .right-side input[type="number"],
+.collection-view-layer .right-side input[type="number"] {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.collection-form-layer .right-side input[type="submit"],
+.collection-view-layer .right-side input[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.collection-view-layer #viewFromBoard td {
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.collection-view-layer .left-side .from-board {
+  cursor: auto;
+}
+
+.collection-view-layer .collection-view-btn {
+  width: 40%;
+  margin: 0 3%;
+}
+
+.collection-form-layer .close-btn,
+.collection-view-layer .close-btn {
+  position: absolute;
+  top: 30px;
+  right: 20px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.bookmark {
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 180px; /* 세로 가운데 정렬 */
+  clip-path: polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%);
+  width: 15px;
+  height: 20px;
+}
+
+.sidemenu div.form-check {
+  position: relative;
+}
+
+.sidemenu-bookmark {
+  position: absolute;
+  right: -20px;
+  top: 0;
+}
+
+.card-bookmark {
+  position: relative;
+  top: -10px;
+  right: -80px;
+}
+
+/* .set-primary-btn {
+  font-size: 1.2rem;
+  position: absolute;
+  top: -40px;
+  left: 20px;
+} */
+
+.is-primary-btn {
+  font-size: 1.4rem; /* 이모지 크기 조정 */
+  position: absolute;
+  /* top: -40px; */
+  padding: 0;
+  left: 10px;
+  bottom: 90px;
+}
+
+.is-primary-btn.set-primary-btn {
+  font-size: 1.4rem; /* 이모지 크기 조정 */
+  position: absolute;
+  /* top: -40px; */
+  left: 10px;
+  bottom: 90px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  
+  color: transparent;
+  text-shadow: 
+    1px 1px 0px #fff,
+    -1px -1px 0px #fff,
+    1px -1px 0px #fff,
+    -1px 1px 0px #fff,
+    0px 0px 4px black;
+}
+
+
+.edit-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.edit-overlay i {
+  color: white;
+  font-size: 48px;  /* 아이콘 크기 */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);  /* 아이콘에 그림자 효과 */
+}
+
+.collection-form-layer label:hover .edit-overlay,
+.collection-view-layer label:hover .edit-overlay {
+    opacity: 1;
+}
+
+@media screen and (max-width: 767px) {
+  .sidemenu {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: calc(100% - 40px);
+    margin: 20px auto;
+    max-width: 500px;
+  }
+
+  .myhome-upper-buttons {
+    justify-content: center;
+  }
+
+  .myhome-upper-buttons .btn {
+    margin: 10px;
+    width: 45%;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .main-section {
+    margin-left: 0;
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .myhome-collections {
+    width: calc(100% - 20px);
+    margin-top: 20px;
+  }
+
+  .myhome-collections .collection-box {
+    width: calc(50% - 20px);
+    min-width: 150px;
+  }
+}
+
+
+
+
+
+.collection-form-layer .collection-images,
+.collection-view-layer .collection-images {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+/* .collection-form-layer .collection-images #mainCollectionImage,
+.collection-view-layer .collection-images #mainCollectionImage {
+  height: 80%;
+} */
+
+.collection-form-layer .main-image,
+.collection-view-layer .main-image {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.collection-form-layer .main-image img,
+.collection-view-layer .main-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+  transform-origin: center center;
+}
+
+.collection-form-layer .main-image:hover img,
+.collection-view-layer .main-image:hover img {
+  transform: scale(1); /* 기본 줌 제거 */
+}
+
+.collection-form-layer #zoomGuideImage,
+.collection-view-layer #zoomGuideImage {
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+
+.collection-form-layer .thumbnail-images,
+.collection-view-layer .thumbnail-images {
+  display: flex;
+  justify-content: left; /* 썸네일 중앙 정렬 */
+  margin-top: 10px;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.collection-form-layer .thumbnail-images::-webkit-scrollbar,
+.collection-view-layer .thumbnail-images::-webkit-scrollbar {
+  display: none;
+}
+
+
+.collection-form-layer .thumbnail-images span,
+.collection-view-layer .thumbnail-images span {
+  position: relative;
+}
+
+.collection-form-layer .thumbnail-images img,
+.collection-view-layer .thumbnail-images img {
+  width: 80px; /* 썸네일 너비 */
+  height: 80px; /* 썸네일 높이 */
+  margin-right: 10px;
+  cursor: pointer;
+  object-fit: cover; /* 썸네일도 비율 유지 */
+  border: 2px solid #ddd; /* 썸네일 테두리 */
+  border-radius: 4px; /* 썸네일 둥글게 */
+  transition: border-color 0.3s;
+}
+
+.collection-form-layer .thumbnail-images .new-image-btn,
+.collection-view-layer .thumbnail-images .new-image-btn {
+   background-color: rgb(251, 251, 251);
+}
+
+.collection-form-layer .thumbnail-images .new-image-btn img,
+.collection-view-layer .thumbnail-images .new-image-btn img {
+  opacity: 0.5;
+}
+
+.collection-form-layer .thumbnail-images img:last-child,
+.collection-view-layer .thumbnail-images img:last-child {
+  margin-right: 0;
+}
+
+.collection-form-layer .thumbnail-images img:hover,
+.collection-view-layer .thumbnail-images img:hover {
+  border-color: #333; /* 호버 시 테두리 색 변경 */
+}
+
+.collection-form-layer .left-side .collection-image-btn,
+.collection-view-layer .left-side .collection-image-btn {
+  font-size: 1.1rem;
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: 0.8;
+  padding: 0;
+}
+
+.collection-form-layer .left-side .collection-image-btn:hover,
+.collection-view-layer .left-side .collection-image-btn:hover {
+  scale: calc(1.1);
+}
